@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <Nullable>enable</Nullable>
+    <LangVersion>9.0</LangVersion>
+    <AssemblyVersion>0.4.2.0</AssemblyVersion>
+    <FileVersion>0.4.2.0</FileVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AvaloniaResource Include="Assets\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="0.10.0" />
+    <PackageReference Include="Avalonia.Desktop" Version="0.10.0" />
+    <PackageReference Include="Avalonia.Diagnostics" Version="0.10.0" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.0" />
+    <PackageReference Include="LogMagic" Version="2.17.5" />
+    <PackageReference Include="Material.Avalonia" Version="2.0.0" />
+    <PackageReference Include="MessageBox.Avalonia" Version="1.1.1" />
+    <PackageReference Include="ReactiveUI.Fody" Version="13.2.18" />
+    <PackageReference Include="TwitchLib" Version="3.2.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="auth.txt">
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  
+</Project>

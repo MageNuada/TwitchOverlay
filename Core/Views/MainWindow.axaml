@@ -1,0 +1,98 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="600"
+        x:Class="ChatOverlay.Core.MainWindow" WindowState="FullScreen"
+        xmlns:local="using:ChatOverlay.Core"
+        xmlns:core="using:System"
+        xmlns:images="using:Avalonia.Media.Imaging"
+        Icon="/Assets/logo.ico"
+        x:CompileBindings="True" x:DataType="local:MainWindowViewModel"
+        Title="ChatOverlay.Core" HasSystemDecorations="False" Background="#00000000" TransparencyLevelHint="Transparent">
+
+  <Design.DataContext>
+    <local:MainWindowViewModel ChatWidth="400" TextShadow="True" OverlayColor="Black" />
+  </Design.DataContext>
+  
+  <Grid>
+    <Grid.Resources>
+      <local:IntervalConverter x:Key="IntervalConverter"/>
+      <local:MessageConverter x:Key="MessageConverter"/>
+      <local:BrushConverter x:Key="BrushConverter"/>
+    </Grid.Resources>
+
+    <ListBox x:Name="MessagesList"
+             Margin="{Binding Margin}" Height="{Binding ChatHeight}" Width="{Binding ChatWidth}" 
+             VerticalAlignment="{Binding VerticalAlignment}" HorizontalAlignment="{Binding HorizontalAlignment}" 
+             Background="{Binding OverlayColor, Converter={StaticResource BrushConverter}}" Items="{Binding Messages}"
+             SelectionMode="Single" Scroll="{Binding TS, Mode=OneWayToSource}" VirtualizationMode="Simple"
+             ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Auto">
+      <ListBox.ItemTemplate>
+        <DataTemplate>
+          <StackPanel Orientation="Vertical" Background="{Binding Background, Converter={StaticResource BrushConverter}, ConverterParameter=0\,5}" 
+                      Margin="{Binding $parent[ListBox].DataContext.MessagesInterval, Converter={StaticResource IntervalConverter}}" 
+                      Width="{Binding $parent[ListBox].DataContext.MessageWidth}" x:CompileBindings="False">
+            <WrapPanel DockPanel.Dock="Top" Orientation="Horizontal">
+              <!--name-->
+              <TextBlock Grid.Column="0" TextAlignment="Left" Padding="0,3,0,0" Margin="0,0, 5, 10" Foreground="{Binding Message.ColorHex}"
+                         Text="{Binding Message.DisplayName}" TextWrapping="Wrap" TextTrimming="WordEllipsis"/>
+
+              <!--badges-->
+              <ItemsControl VerticalAlignment="Center" Margin="0,-5, 2, 0" Items="{Binding Badges}">
+                <ItemsControl.ItemsPanel>
+                  <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Horizontal"/>
+                  </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <Image Margin="0,0,3,0" Width="16" Height="16" Source="{Binding}"/>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+
+              <!--time-->
+              <TextBlock Grid.Column="1" TextAlignment="Left" Padding="0,3,0,0" Margin="0,0,0,0"
+                         Foreground="{Binding $parent[ListBox].DataContext.MessageColor, Converter={StaticResource BrushConverter}}"
+                         Text="{Binding Time, StringFormat=\{0:HH:mm:ss\}}" TextWrapping="Wrap"
+                         IsVisible="{Binding $parent[ListBox].DataContext.ShowMessageTime}" TextTrimming="WordEllipsis"/>
+            </WrapPanel>
+            <!--text-->
+            <ItemsControl Margin="0,0,0,-10" VerticalAlignment="Center" Items="{Binding Elements}">
+              <ItemsControl.DataTemplates>
+                <DataTemplate DataType="core:String">
+                  <Grid>
+                    <TextBlock Foreground="Black" IsVisible="{Binding $parent[ListBox].DataContext.TextShadow}"
+                                Text="{Binding}" Padding="1.5,4,0,0" />
+                    <TextBlock Foreground="{Binding $parent[ListBox].DataContext.MessageColor, Converter={StaticResource BrushConverter}}"
+                                Text="{Binding}" Padding="0,3,0,0" />
+                  </Grid>
+                </DataTemplate>
+                <DataTemplate DataType="images:Bitmap">
+                  <Image Margin="0,0,3,0" Width="20" Height="20" Source="{Binding}"/>
+                </DataTemplate>
+              </ItemsControl.DataTemplates>
+              <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <WrapPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+              </ItemsControl.ItemsPanel>
+            </ItemsControl>
+
+            <Panel HorizontalAlignment="Stretch" Height="2"
+                   Background="{Binding $parent[ListBox].DataContext.SeparatorColor, Converter={StaticResource BrushConverter}}"
+                   Margin="0,15,0,0"/>
+          </StackPanel>
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+    </ListBox>
+    
+    <Grid IsVisible="False" Height="{Binding ChatHeight}" Width="{Binding ChatWidth}"
+         VerticalAlignment="Top" HorizontalAlignment="Left" />
+    
+    <!--<Button Background="#55777777" Margin="1" Command="{Binding ExitCommand}" VerticalAlignment="Top" 
+            HorizontalAlignment="Right" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Content="x" 
+            Width="25" Height="30"/>-->
+  </Grid>
+</Window>

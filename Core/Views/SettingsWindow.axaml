@@ -1,0 +1,180 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="750" d:DesignHeight="850"
+        x:Class="ChatOverlay.Core.SettingsWindow"
+        xmlns:local="using:ChatOverlay.Core"
+        xmlns:cp="using:ThemeEditor.Controls.ColorPicker"
+        Icon="/Assets/logo.ico"
+        MinWidth="200"
+        MinHeight="200"
+        Width="750"
+        Height="650"
+        x:CompileBindings="True" x:DataType="local:SettingsWindowViewModel"
+        Title="SettingsWindow" WindowStartupLocation="CenterScreen">
+
+  <Design.DataContext>
+    <local:SettingsWindowViewModel />
+  </Design.DataContext>
+
+  <Window.Resources>
+    <local:BrushConverter x:Key="BrushConverter"/>
+    <local:MarginConverter x:Key="MarginConverter"/>
+    <local:AlphaConverter x:Key="AlphaConverter"/>
+  </Window.Resources>
+
+  <Window.Styles>
+    <Style Selector="ComboBox.ColorBox">
+      <Setter Property="ItemTemplate">
+        <Setter.Value>
+          <DataTemplate x:CompileBindings="False">
+            <StackPanel Orientation="Horizontal">
+              <Grid Width="20" Height="20" Background="{Binding Converter={StaticResource BrushConverter}}" Margin="0,0,5,0"/>
+              <TextBlock VerticalAlignment="Center" Text="{Binding}"/>
+            </StackPanel>
+          </DataTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+    <Style Selector="Slider">
+      <Setter Property="IsSnapToTickEnabled" Value="True" />
+      <Setter Property="TickFrequency" Value="1" />
+      <!--<Setter Property="ToolTip.Tip" Value="{Binding $self.Value}" x:CompileBindings="False"/>-->
+    </Style>
+  </Window.Styles>
+  
+  <Grid Margin="20">
+    <Border BorderThickness="2" BorderBrush="Black" CornerRadius="5">
+      <TabControl>
+        <TabItem Header="General">
+          <StackPanel Margin="10">
+            <StackPanel Margin="0,0,0,10" Orientation="Horizontal">
+              <TextBlock Classes="aligned" Width="200" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Text="Vertical aligment"/>
+              <ComboBox Classes="aligned" Width="200" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Items="{Binding VerticalAligmentEnum}"
+                        HorizontalAlignment="Stretch" SelectedItem="{Binding TargetViewModel.VerticalAlignment}"/>
+            </StackPanel>
+            <StackPanel Margin="0,0,0,10" Orientation="Horizontal">
+              <TextBlock Width="200" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Text="Horizontal aligment"/>
+              <ComboBox Width="200" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Items="{Binding HorizontalAligmentEnum}"
+                        HorizontalAlignment="Stretch" SelectedItem="{Binding TargetViewModel.HorizontalAlignment}"/>
+            </StackPanel>
+            <StackPanel Margin="0,0,0,0" Orientation="Horizontal">
+              <TextBlock Width="200" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Text="Margin"/>
+              <TextBox Width="200" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Stretch"
+                        Text="{Binding TargetViewModel.Margin, Converter={StaticResource MarginConverter}}"/>
+            </StackPanel>
+            <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
+              <TextBlock Width="200" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" Text="Window width"/>
+              <Slider Classes="Discrete Accent Ticks" Width="200" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Minimum="50" Maximum="1000" Value="{Binding TargetViewModel.ChatWidth}"
+                        TickFrequency="1" HorizontalAlignment="Stretch" />
+            </StackPanel>            
+            <StackPanel Margin="0,10,0,10" Orientation="Horizontal">
+              <TextBlock Width="200" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center" Text="Window height"/>
+              <Slider Classes="Discrete Accent Ticks" Width="200" Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" Minimum="50" Maximum="1000" Value="{Binding TargetViewModel.ChatHeight}"
+                        TickFrequency="1" HorizontalAlignment="Stretch" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+              <TextBlock Width="200" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center" Text="Show settings on startup"/>
+              <ToggleSwitch Classes="Accent" Grid.Row="5" Grid.Column="0"
+                         HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="Gray" IsChecked="{Binding TargetViewModel.ShowSettingsOnStartUp}"/>
+            </StackPanel>
+          </StackPanel>
+        </TabItem>
+        <TabItem Header="Chat">
+          <StackPanel Margin="10">
+            <StackPanel Margin="0,0,0,10" Orientation="Horizontal">
+              <TextBlock Width="200" Grid.Row="6" Grid.Column="0" VerticalAlignment="Center" Text="Messages color"/>
+              <ComboBox Width="200" Grid.Row="6" Grid.Column="1" VerticalAlignment="Center" Items="{Binding Colors}" MaxDropDownHeight="300"
+                        HorizontalAlignment="Stretch" SelectedItem="{Binding TargetViewModel.MessageColor}" Classes="ColorBox"/>
+            </StackPanel>
+            <StackPanel Margin="0,0,0,10" Orientation="Horizontal">
+              <TextBlock Width="200" Grid.Row="12" Grid.Column="0" VerticalAlignment="Center" Text="Separator color"/>
+              <ComboBox Width="200" Grid.Row="12" Grid.Column="1" VerticalAlignment="Center" Items="{Binding Colors}" MaxDropDownHeight="300"
+                        HorizontalAlignment="Stretch" SelectedItem="{Binding TargetViewModel.SeparatorColor}" Classes="ColorBox"/>
+            </StackPanel>
+            <StackPanel Margin="0,0,0,10" Orientation="Horizontal">
+              <TextBlock Width="200" Grid.Row="13" Grid.Column="0" VerticalAlignment="Center" Text="Highlight pattern"/>
+              <TextBox Width="200" Grid.Row="13" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Stretch"
+                        Text="{Binding TargetViewModel.HighlightedMessagesPattern}}" ToolTip.Tip="{Binding $self.Text}" x:CompileBindings="False"/>
+            </StackPanel>
+            <StackPanel Margin="0,0,0,10" Orientation="Horizontal">
+              <TextBlock Width="200" Grid.Row="14" Grid.Column="0" VerticalAlignment="Center" Text="Highlighted messages color"/>
+              <ComboBox Width="200" Grid.Row="14" Grid.Column="1" VerticalAlignment="Center" Items="{Binding Colors}" MaxDropDownHeight="300"
+                        HorizontalAlignment="Stretch" SelectedItem="{Binding TargetViewModel.HighlightedMessageColor}" Classes="ColorBox"/>
+            </StackPanel>
+            <StackPanel Margin="0,0,0,0" Orientation="Horizontal">
+              <TextBlock Width="200" Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" Text="Overlay color"/>
+              <ComboBox Width="200" Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" Items="{Binding Colors}"
+                        SelectedItem="{Binding TargetViewModel.OverlayColor, Converter={StaticResource AlphaConverter}, ConverterParameter={Binding Transparency}}"
+                        HorizontalAlignment="Stretch" MaxDropDownHeight="300" Classes="ColorBox"/>
+            </StackPanel>
+            <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
+              <TextBlock Width="200" Grid.Row="7" Grid.Column="0" VerticalAlignment="Center" Text="Overlay transparency"/>
+              <Slider Classes="Discrete Accent"  Width="200" Grid.Row="7" Grid.Column="1" VerticalAlignment="Center" Minimum="0" Maximum="255" Value="{Binding Transparency}"
+                        TickFrequency="1" HorizontalAlignment="Stretch" />
+            </StackPanel>
+            <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
+              <TextBlock Width="200" Grid.Row="9" Grid.Column="0" VerticalAlignment="Center" Text="Message time to live(0-60s)"/>
+              <Slider Classes="Discrete Accent Ticks"  Width="200" Grid.Row="9" Grid.Column="1" VerticalAlignment="Center" Minimum="0" Maximum="60" Value="{Binding TargetViewModel.MessageTTL}"
+                        TickFrequency="1" HorizontalAlignment="Stretch" />
+            </StackPanel>
+            <StackPanel Margin="0,10,0,10" Orientation="Horizontal">
+              <TextBlock Width="200" Grid.Row="11" Grid.Column="0" VerticalAlignment="Center" Text="Messages interval(0-60px)"/>
+              <Slider Classes="Discrete Accent Ticks"  Width="200" Grid.Row="11" Grid.Column="1" VerticalAlignment="Center" Minimum="0" Maximum="60" Value="{Binding TargetViewModel.MessagesInterval}"
+                        TickFrequency="1" HorizontalAlignment="Stretch" />
+            </StackPanel>            
+            <StackPanel Margin="0,0,0,10" Orientation="Horizontal">
+              <TextBlock Width="200" Grid.Row="15" Grid.Column="0" VerticalAlignment="Center" Text="Show text shadow"/>
+              <ToggleSwitch Classes="Accent" Width="200" Grid.Row="15" Grid.Column="1" VerticalAlignment="Center" IsChecked="{Binding TargetViewModel.TextShadow}"/>
+            </StackPanel>
+            <StackPanel Margin="0,0,0,10" Orientation="Horizontal">
+              <TextBlock Width="200" Grid.Row="10" Grid.Column="0" VerticalAlignment="Center" Text="Show messages time"/>
+              <ToggleSwitch Classes="Accent" Width="200" Grid.Row="10" Grid.Column="1" VerticalAlignment="Center" IsChecked="{Binding TargetViewModel.ShowMessageTime}"/>
+            </StackPanel>
+          </StackPanel>
+        </TabItem>
+        <TabItem Header="Integrations">
+          <StackPanel Orientation="Vertical">
+            <Border Margin="10" BorderBrush="Black" CornerRadius="5" BorderThickness="2">
+              <StackPanel Margin="10" Orientation="Vertical">
+                <Border CornerRadius="5" HorizontalAlignment="Left" BorderBrush="Black" BorderThickness="1">
+                  <TextBlock Margin="10,0,10,0" Text="Twitch" />
+                </Border>
+                <StackPanel Orientation="Horizontal">
+                  <TextBlock Width="200" Grid.Row="8" Grid.Column="0" VerticalAlignment="Center" Text="Channel name"/>
+                  <TextBox Width="200" Grid.Row="8" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Stretch"
+                            Text="{Binding ChannelName}}"/>
+                  <Button Classes="Accent" Grid.Row="8" Grid.Column="2" VerticalAlignment="Center" Width="150" Height="32" Margin="40,10"
+                          Content="Change channel" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                          Command="{Binding ChangeChannelCommand}" x:CompileBindings="False"/>
+                </StackPanel>
+              </StackPanel>
+            </Border>
+          </StackPanel>
+        </TabItem>
+        <TabItem Header="Debug">
+          <ListBox Margin="10" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Items="{Binding TargetViewModel.LogMessages}" >
+            <ListBox.ItemTemplate>
+              <DataTemplate>
+                <TextBox TextAlignment="Left" Padding="0,3,0,0" Margin="-10" Text="{Binding}" TextWrapping="Wrap"
+                             x:CompileBindings="False"/>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+        </TabItem>
+        <TabItem Header="About">
+          <StackPanel Orientation="Vertical" Margin="10">
+            <TextBlock Text="Ctrl+Alt+S - open settings window" Margin="10"
+           HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="Gray"/>
+            <TextBlock Text="Ctrl+Alt+Q - close chat client" Margin="10"
+                       HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="Gray"/>
+            <TextBlock Text="Made by Nuada, 2021." Margin="10"
+                       HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="Gray"/>
+          </StackPanel>
+        </TabItem>
+      </TabControl>
+    </Border>
+  </Grid>
+  
+</Window>

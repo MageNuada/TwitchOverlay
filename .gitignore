@@ -1,0 +1,8 @@
+*.tlog
+*.ipch
+*.sdf
+packages/*
+*.suo
+*.vs
+**/obj/**
+**/bin/**
