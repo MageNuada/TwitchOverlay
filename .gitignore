@@ -3,6 +3,7 @@
 *.sdf
 packages/*
 *.suo
-*.vs
+.vs/
 **/obj/**
 **/bin/**
+Publish/
