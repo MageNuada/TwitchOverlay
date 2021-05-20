@@ -169,6 +169,8 @@
            HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="Gray"/>
             <TextBlock Text="Ctrl+Alt+Q - close chat client" Margin="10"
                        HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="Gray"/>
+            <TextBlock Text="{Binding Version, StringFormat={}App version {0}}" Margin="10"
+              HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="Gray"/>
             <TextBlock Text="Made by Nuada, 2021." Margin="10"
                        HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="Gray"/>
           </StackPanel>

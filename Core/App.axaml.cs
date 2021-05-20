@@ -1,4 +1,5 @@
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
@@ -23,9 +24,12 @@ namespace ChatOverlay.Core
 
         public override void OnFrameworkInitializationCompleted()
         {
-            Log = L.G("client");
-            L.Config.WriteTo.File($".{Path.DirectorySeparatorChar}logs{Path.DirectorySeparatorChar}log.txt").EnrichWith.ThreadId();
-            Log.Trace($"Client started at {DateTime.Now}");
+            if (!Design.IsDesignMode)
+            {
+                Log = L.G("client");
+                L.Config.WriteTo.File($".{Path.DirectorySeparatorChar}logs{Path.DirectorySeparatorChar}log.txt").EnrichWith.ThreadId();
+                Log.Trace($"Client started at {DateTime.Now}");
+            }
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 var loadingWindow = new LoadingView();

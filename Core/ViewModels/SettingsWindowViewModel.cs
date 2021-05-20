@@ -11,6 +11,8 @@ namespace ChatOverlay.Core
 {
     public class SettingsWindowViewModel : ReactiveObject
     {
+        public string Version { get; } = "0.4.2";
+
         public SettingsWindowViewModel()
         {
             if (Design.IsDesignMode)
