@@ -159,8 +159,8 @@ namespace ChatOverlay.Core
         private GlobalBadgesResponse _globalBadges;
         private ChannelDisplayBadges _channelBadges;
         private ChannelBadges _channelBadges2;
-        private Dictionary<string, Bitmap> _emotes;
-        private Dictionary<string, Bitmap> _badges;
+        private readonly Dictionary<string, Bitmap> _emotes;
+        private readonly Dictionary<string, Bitmap> _badges;
         private readonly object _lock = new(), _logLock = new();
 
         public static MainWindowViewModel Instance { get; private set; }
