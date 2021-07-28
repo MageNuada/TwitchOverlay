@@ -124,13 +124,10 @@ namespace ChatOverlay.Core
                     preparedText = preparedText.Remove(0, index);
                     preparedText = preparedText.Remove(0, emoteName.Length);
                     var image = Emotes[emoteName];
-                    if (image is Stream stream)
+                    if (image is byte[] bytes)
                     {
-                        MemoryStream clone = new();
-                        stream.Position = 0;
-                        stream.CopyTo(clone);
-                        clone.Position = 0;
-                        image = clone;
+                        MemoryStream stream = new(bytes);
+                        image = stream;
                     }
                     Elements.Add(image);
                     currentLength += 4;
@@ -476,7 +473,7 @@ namespace ChatOverlay.Core
                             var bytes = client.DownloadData(new Uri(url));
                             if (bytes == null) continue;
                             MemoryStream s = new(bytes);
-                            _emotes[emote.Name] = isAnimated ? s : new Bitmap(s);
+                            _emotes[emote.Name] = isAnimated ? bytes : new Bitmap(s);
                         }
                         emotes[emote.Name] = _emotes[emote.Name];
                     }
