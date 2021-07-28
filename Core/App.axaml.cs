@@ -15,7 +15,9 @@ namespace ChatOverlay.Core
     {
         private const string _settingsFile = "settings.json";
 
+#pragma warning disable CS8618 // Поле, не допускающее значения NULL, должно содержать значение, отличное от NULL, при выходе из конструктора. Возможно, стоит объявить поле как допускающее значения NULL.
         public static ILog Log { get; private set; }
+#pragma warning restore CS8618 // Поле, не допускающее значения NULL, должно содержать значение, отличное от NULL, при выходе из конструктора. Возможно, стоит объявить поле как допускающее значения NULL.
 
         public override void Initialize()
         {
@@ -34,7 +36,7 @@ namespace ChatOverlay.Core
             {
                 var loadingWindow = new LoadingView();
                 desktop.MainWindow = loadingWindow;
-                desktop.ShutdownMode = Avalonia.Controls.ShutdownMode.OnMainWindowClose;
+                desktop.ShutdownMode = ShutdownMode.OnMainWindowClose;
                 Task.Run(() =>
                 {
                     MainWindowViewModel? viewModel = null;

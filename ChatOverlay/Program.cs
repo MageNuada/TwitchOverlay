@@ -5,7 +5,7 @@ using LogMagic;
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Net;
+using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -37,8 +37,8 @@ namespace ChatOverlay
                 if (!Debugger.IsAttached)
                 {
                     using SHA256 sha256Hash = SHA256.Create();
-                    using WebClient client = new();
-                    var bytes = client.DownloadData(new Uri(@"https://drive.google.com/uc?export=download&id=14H9vs7Smv8wvyZYy0LP4CMjAKzJ9vQHU"));
+                    using HttpClient client = new();
+                    var bytes = client.GetByteArrayAsync(new Uri(@"https://drive.google.com/uc?export=download&id=14H9vs7Smv8wvyZYy0LP4CMjAKzJ9vQHU")).Result;
                     var netSource = Encoding.UTF8.GetString(bytes);
 
                     var localSource = File.ReadAllText("ChatOverlay.Core.dll");

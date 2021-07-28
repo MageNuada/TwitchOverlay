@@ -2,11 +2,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:gif="using:AvaloniaGif"
         mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="600"
         x:Class="ChatOverlay.Core.MainWindow" WindowState="FullScreen"
         xmlns:local="using:ChatOverlay.Core"
         xmlns:core="using:System"
         xmlns:images="using:Avalonia.Media.Imaging"
+        xmlns:streams="using:System.IO"
         Icon="/Assets/logo.ico"
         x:CompileBindings="True" x:DataType="local:MainWindowViewModel"
         Title="ChatOverlay.Core" HasSystemDecorations="False" Background="#00000000" TransparencyLevelHint="Transparent">
@@ -71,6 +73,12 @@
                 </DataTemplate>
                 <DataTemplate DataType="images:Bitmap">
                   <Image Margin="0,0,3,0" Width="20" Height="20" Source="{Binding}"/>
+                </DataTemplate>
+                <DataTemplate DataType="streams:MemoryStream">
+                  <gif:GifImage Margin="0,0,3,0" Width="20" Height="20" SourceStream="{Binding}"
+                                SourceUriRaw="{Binding Path=SelectedGif}"
+                                Stretch="Uniform"
+                                StretchDirection="Both" />
                 </DataTemplate>
               </ItemsControl.DataTemplates>
               <ItemsControl.ItemsPanel>

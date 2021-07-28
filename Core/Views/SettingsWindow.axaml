@@ -157,19 +157,19 @@
           <ListBox Margin="10" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Items="{Binding TargetViewModel.LogMessages}" >
             <ListBox.ItemTemplate>
               <DataTemplate>
-                <TextBox TextAlignment="Left" Padding="0,3,0,0" Margin="-10" Text="{Binding}" TextWrapping="Wrap"
-                             x:CompileBindings="False"/>
+                <TextBox TextAlignment="Left" Padding="0,3,0,0" Margin="-10" Text="{Binding}" TextWrapping="Wrap" 
+                         IsReadOnly="True" x:CompileBindings="False"/>
               </DataTemplate>
             </ListBox.ItemTemplate>
           </ListBox>
         </TabItem>
-        <TabItem Header="About">
+        <TabItem Header="Tips &amp; About">
           <StackPanel Orientation="Vertical" Margin="10">
             <TextBlock Text="Ctrl+Alt+S - open settings window" Margin="10"
            HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="Gray"/>
             <TextBlock Text="Ctrl+Alt+Q - close chat client" Margin="10"
                        HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="Gray"/>
-            <TextBlock Text="{Binding Version, StringFormat={}App version {0}}" Margin="10"
+            <TextBlock Text="{Binding TargetViewModel.Version, StringFormat={}App version {0}}" Margin="10"
               HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="Gray"/>
             <TextBlock Text="Made by Nuada, 2021." Margin="10"
                        HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="Gray"/>

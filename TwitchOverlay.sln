@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31112.23
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31521.260
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatOverlay", "ChatOverlay\ChatOverlay.csproj", "{47A42010-5B6E-4BA4-AB4E-B8F18B9B24EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatOverlay.Core", "Core\ChatOverlay.Core.csproj", "{D5ED2556-EB5B-47FD-8B09-CBF522F91D7D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatOverlay.Core", "Core\ChatOverlay.Core.csproj", "{D5ED2556-EB5B-47FD-8B09-CBF522F91D7D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AvaloniaGif", "AvaloniaGif\AvaloniaGif.csproj", "{F5DCB1A0-7084-4E57-9131-1CF7993D61DD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{D5ED2556-EB5B-47FD-8B09-CBF522F91D7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D5ED2556-EB5B-47FD-8B09-CBF522F91D7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D5ED2556-EB5B-47FD-8B09-CBF522F91D7D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5DCB1A0-7084-4E57-9131-1CF7993D61DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5DCB1A0-7084-4E57-9131-1CF7993D61DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5DCB1A0-7084-4E57-9131-1CF7993D61DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5DCB1A0-7084-4E57-9131-1CF7993D61DD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

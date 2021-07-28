@@ -5,9 +5,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
-using Avalonia.Platform;
 using Avalonia.Threading;
-using LogMagic;
 using Newtonsoft.Json;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -16,6 +14,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using TwitchLib.Api;
@@ -31,7 +30,7 @@ namespace ChatOverlay.Core
 {
     public class TimedMessage : ReactiveObject
     {
-        public TimedMessage(ChatMessage message, Color background, IEnumerable<Bitmap> badges = null, Dictionary<string, Bitmap> emotes = null)
+        public TimedMessage(ChatMessage message, Color background, IEnumerable<Bitmap> badges = null, Dictionary<string, object> emotes = null)
         {
             Message = message;
             if (long.TryParse(Message.TmiSentTs, out long ts))
@@ -124,7 +123,16 @@ namespace ChatOverlay.Core
 
                     preparedText = preparedText.Remove(0, index);
                     preparedText = preparedText.Remove(0, emoteName.Length);
-                    Elements.Add(Emotes[emoteName]);
+                    var image = Emotes[emoteName];
+                    if (image is Stream stream)
+                    {
+                        MemoryStream clone = new();
+                        stream.Position = 0;
+                        stream.CopyTo(clone);
+                        clone.Position = 0;
+                        image = clone;
+                    }
+                    Elements.Add(image);
                     currentLength += 4;
                 }
 
@@ -140,11 +148,11 @@ namespace ChatOverlay.Core
         //public Image RenderedText { get; set; }
         [Reactive]
         public Color Background { get; set; }
-        public Dictionary<string, Bitmap> Emotes { get; }
+        public Dictionary<string, object> Emotes { get; }
         public ChatMessage Message { get; }
         public DateTimeOffset Time { get; }
-        public AvaloniaList<Bitmap> Badges { get; } = new AvaloniaList<Bitmap>();
-        public AvaloniaList<object> Elements { get; } = new AvaloniaList<object>() { ResetBehavior = ResetBehavior.Reset };
+        public AvaloniaList<Bitmap> Badges { get; } = new ();
+        public AvaloniaList<object> Elements { get; } = new () { ResetBehavior = ResetBehavior.Reset };
     }
 
     public class MainWindowViewModel : ReactiveObject
@@ -159,8 +167,8 @@ namespace ChatOverlay.Core
         private GlobalBadgesResponse _globalBadges;
         private ChannelDisplayBadges _channelBadges;
         private ChannelBadges _channelBadges2;
-        private readonly Dictionary<string, Bitmap> _emotes;
-        private readonly Dictionary<string, Bitmap> _badges;
+        private readonly Dictionary<string, object> _emotes = new();
+        private readonly Dictionary<string, Bitmap> _badges = new();
         private readonly object _lock = new(), _logLock = new();
 
         public static MainWindowViewModel Instance { get; private set; }
@@ -168,8 +176,6 @@ namespace ChatOverlay.Core
         public MainWindowViewModel()
         {
             Instance = this;
-            _emotes = new Dictionary<string, Bitmap>();
-            _badges = new Dictionary<string, Bitmap>();
 
             this.WhenAnyValue(x => x.ChatWidth).Subscribe(x => { MessageWidth = x - 6; });
             ChatHeight = 550;
@@ -199,7 +205,7 @@ namespace ChatOverlay.Core
                     //,new [] {img, img }
                     ),
                     new TimedMessage(new ChatMessage("client01","id0", "client", "client", HexConverter(Colors.Red),
-                    System.Drawing.Color.Red, null, $"client version {GetType().Assembly.GetName().Version}!",
+                    System.Drawing.Color.Red, null, $"client version {Version}!",
                     TwitchLib.Client.Enums.UserType.Viewer, "my channel", "01234", true, 1, null, false, false,
                     false, false, false, false, false, TwitchLib.Client.Enums.Noisy.False, "", null, null, null, 0, 0),
                     Colors.Transparent
@@ -248,14 +254,18 @@ namespace ChatOverlay.Core
                     _client = new TwitchClient(customClient);
                     _client.Initialize(credentials, ChannelName);
 
-                    _client.OnLog += Client_OnLog;
+                    _client.OnLog += (s, e) =>
+                    {
+                        LogMessages.Add($"{e.DateTime:HH:mm:ss}: {e.Data}");
+                        if (LogMessages.Count > 100) LogMessages.RemoveRange(0, 50);
+                    };
                     _client.OnMessageReceived += Client_OnMessageReceived;
                     _client.OnNewSubscriber += (s, e) =>
                     {
                         lock (_lock)
                         {
-                            var message = new ChatMessage("Stub01", "id0000", "client", "client", HexConverter(Colors.Red), System.Drawing.Color.Red, null,
-                            $"User {e.Subscriber.DisplayName} make subscription {e.Subscriber.SubscriptionPlan} to channel '{e.Channel}'!",
+                            var message = new ChatMessage(e.Channel, "id0000", "client", "client", HexConverter(Colors.Red), System.Drawing.Color.Red, null,
+                            $"User {e.Subscriber.DisplayName} made subscription {e.Subscriber.SubscriptionPlan} to channel '{e.Channel}'!",
                             TwitchLib.Client.Enums.UserType.Viewer, "my channel", "01234", true, 1, null, false, false,
                             false, false, false, false, false, TwitchLib.Client.Enums.Noisy.False, "rawircmsg", null, null, null, 0, 0);
                             Color color = CheckPattern(message);
@@ -312,6 +322,19 @@ namespace ChatOverlay.Core
                     {
                         lock (_logLock) App.Log.Trace($"netclient leave user: {e.Username} {e.Channel}");
                     };
+                    _client.OnRaidNotification += (s, e) =>
+                    {
+                        lock (_lock)
+                        {
+                            var message = new ChatMessage(e.Channel, "id0000", "client", "client", HexConverter(Colors.Red), System.Drawing.Color.Red, null,
+                            $"User {e.RaidNotification.DisplayName} made rade!",
+                            TwitchLib.Client.Enums.UserType.Viewer, "my channel", "01234", true, 1, null, false, false,
+                            false, false, false, false, false, TwitchLib.Client.Enums.Noisy.False, "rawircmsg", null, null, null, 0, 0);
+                            Color color = CheckPattern(message);
+                            Messages.Add(new TimedMessage(message, color));
+                        }
+                        Workaround();
+                    };
 
                     _client.Connect();
 
@@ -349,14 +372,17 @@ namespace ChatOverlay.Core
                 {
                     while (true)
                     {
-                        Thread.Sleep(10);
+                        Thread.Sleep(100);
                         if (MessageTTL == 0) continue;
                         lock (_lock)
                         {
-                            while (Messages.Count > 0 && (DateTime.Now - Messages[0].Time).TotalSeconds > MessageTTL)
-                            {
-                                Messages.RemoveAt(0);
-                            }
+                            int i = 0;
+                            while (i < Messages.Count && (DateTime.Now - Messages[i].Time).TotalSeconds > MessageTTL) i++;
+                            if (i > 0) Dispatcher.UIThread.InvokeAsync(() => { Messages.RemoveRange(0, i); });
+                            //while (Messages.Count > 0 && (DateTime.Now - Messages[0].Time).TotalSeconds > MessageTTL)
+                            //{
+                            //    Messages.RemoveAt(0);
+                            //}
                         }
                     }
                 });
@@ -386,16 +412,10 @@ namespace ChatOverlay.Core
             }
         }
 
-        private void Client_OnLog(object? sender, OnLogArgs e)
-        {
-            LogMessages.Add($"{e.DateTime:HH:mm:ss}: {e.Data}");
-            if (LogMessages.Count > 100) LogMessages.RemoveRange(0, 50);
-        }
-
         private void Client_OnMessageReceived(object? sender, OnMessageReceivedArgs e)
         {
             List<Bitmap> badges = new();
-            Dictionary<string, Bitmap> emotes = new();
+            Dictionary<string, object> emotes = new();
             try
             {
 #if LOGGING
@@ -449,11 +469,14 @@ namespace ChatOverlay.Core
 #endif
                         if (!_emotes.ContainsKey(emote.Name))
                         {
-                            var bytes = client.DownloadData(new Uri(emote.ImageUrl));
+                            bool isAnimated = !int.TryParse(emote.Id, out _);
+                            var url = emote.ImageUrl;
+                            if (isAnimated)
+                                url = url.Replace("/v1/", "/v2/").Replace("/1.0", "/default/light/1.0");
+                            var bytes = client.DownloadData(new Uri(url));
                             if (bytes == null) continue;
-                            using MemoryStream s = new(bytes);
-                            Bitmap image = new(s);
-                            _emotes.Add(emote.Name, image);
+                            MemoryStream s = new(bytes);
+                            _emotes[emote.Name] = isAnimated ? s : new Bitmap(s);
                         }
                         emotes[emote.Name] = _emotes[emote.Name];
                     }
@@ -468,7 +491,7 @@ namespace ChatOverlay.Core
                 Color color = CheckPattern(e.ChatMessage);
                 Messages.Add(new TimedMessage(e.ChatMessage, color, badges, emotes));
                 if (Messages.Count > 100)
-                    Messages.RemoveRange(0, 50);
+                    Dispatcher.UIThread.InvokeAsync(() => { Messages.RemoveRange(0, 50); });
             }
             Workaround();
         }
@@ -506,7 +529,9 @@ namespace ChatOverlay.Core
                 });
             });
         }
-        
+
+        public string Version { get; } = Assembly.GetCallingAssembly().GetName().Version.ToString();
+
         [Reactive, JsonProperty, JsonConverter(typeof(ThicknessConverter))]
         public Thickness Margin { get; set; }
 

@@ -11,13 +11,12 @@ namespace ChatOverlay.Core
 {
     public class SettingsWindowViewModel : ReactiveObject
     {
-        public string Version { get; } = "0.4.2";
-
         public SettingsWindowViewModel()
         {
             if (Design.IsDesignMode)
                 TargetViewModel = new MainWindowViewModel();
 
+            ChannelName = string.Empty;
             Type colorType = typeof(Colors);
             // We take only static property to avoid properties like Name, IsSystemColor ...
             PropertyInfo[] propInfos = colorType.GetProperties(BindingFlags.Static | BindingFlags.DeclaredOnly | BindingFlags.Public);

@@ -5,7 +5,6 @@ using Avalonia.Media;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Globalization;
 using System.Linq;
 using TwitchLib.Client.Models;
 
