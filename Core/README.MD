@@ -1,4 +1,4 @@
-0.1
+﻿0.1
 twitch chat
 
 0.2
@@ -18,6 +18,11 @@ disabled auto-updates(not working correctly)
 
 0.4.2
 temporary fixed channel connection bug
+
+-----------------
+Перенести все настройки в отдельный класс
+Починить авто-обновления
+-----------------
 
 0.5
 betterttv and frankerfacez
