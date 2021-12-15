@@ -472,6 +472,11 @@ namespace ChatOverlay.Core
                                 url = url.Replace("/v1/", "/v2/").Replace("/1.0", "/default/light/1.0");
                             var bytes = client.DownloadData(new Uri(url));
                             if (bytes == null) continue;
+                            //temp fix
+                            var slice = bytes[1..4];
+                            if (slice.SequenceEqual(System.Text.Encoding.ASCII.GetBytes("png")) ||
+                                slice.SequenceEqual(System.Text.Encoding.ASCII.GetBytes("PNG")))
+                                isAnimated = false;
                             MemoryStream s = new(bytes);
                             _emotes[emote.Name] = isAnimated ? bytes : new Bitmap(s);
                         }

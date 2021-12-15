@@ -8,7 +8,7 @@
         xmlns:core="using:System"
         xmlns:images="using:Avalonia.Media.Imaging"
         xmlns:streams="using:System.IO"
-        xmlns:gif="using:AvaloniaGif"
+        xmlns:gif="clr-namespace:AvaloniaGif;assembly=AvaloniaGif"
         Icon="/Assets/logo.ico"
         x:CompileBindings="True" x:DataType="local:MainWindowViewModel"
         Title="ChatOverlay.Core" HasSystemDecorations="False" Background="#00000000" TransparencyLevelHint="Transparent">

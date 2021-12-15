@@ -19,7 +19,13 @@ disabled auto-updates(not working correctly)
 0.4.2
 temporary fixed channel connection bug
 
+0.4.3
+updated nugets
+temporary bugfixes for emotes
+
 -----------------
+теперь пнг и по адресам гиф идут - надо смотреть, как различать их
+если имена совпадают частично у эмоций - то беда
 Перенести все настройки в отдельный класс
 Починить авто-обновления
 -----------------

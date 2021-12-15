@@ -35,7 +35,6 @@ namespace ChatOverlay.Core
         protected override void OnDataContextChanged(EventArgs e)
         {
             base.OnDataContextChanged(e);
-
             InitWindowClicks();
 
             if (DataContext is MainWindowViewModel mainViewModel && mainViewModel.ShowSettingsOnStartUp)
