@@ -371,16 +371,19 @@ namespace ChatOverlay.Core
                     {
                         Thread.Sleep(100);
                         if (MessageTTL == 0) continue;
-                        lock (_lock)
-                        {
-                            int i = 0;
-                            while (i < Messages.Count && (DateTime.Now - Messages[i].Time).TotalSeconds > MessageTTL) i++;
-                            if (i > 0) Dispatcher.UIThread.InvokeAsync(() => { Messages.RemoveRange(0, i); });
-                            //while (Messages.Count > 0 && (DateTime.Now - Messages[0].Time).TotalSeconds > MessageTTL)
-                            //{
-                            //    Messages.RemoveAt(0);
-                            //}
-                        }
+						if (i > 0) Dispatcher.UIThread.InvokeAsync(() =>
+						{
+							lock (_lock)
+							{
+								int i = 0;
+								while (i < Messages.Count && (DateTime.Now - Messages[i].Time).TotalSeconds > MessageTTL) i++;
+								Messages.RemoveRange(0, i);
+								//while (Messages.Count > 0 && (DateTime.Now - Messages[0].Time).TotalSeconds > MessageTTL)
+								//{
+								//    Messages.RemoveAt(0);
+								//}
+							}
+						});
                     }
                 });
             }
